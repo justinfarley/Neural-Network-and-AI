@@ -1,0 +1,16 @@
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\data.csv
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\NeuralNetwork.exe
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\NeuralNetwork.deps.json
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\NeuralNetwork.runtimeconfig.json
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\NeuralNetwork.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\NeuralNetwork.pdb
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.AssemblyInfoInputs.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.AssemblyInfo.cs
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.csproj.CoreCompileInputs.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.sourcelink.json
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\refint\NeuralNetwork.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.pdb
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.genruntimeconfig.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\ref\NeuralNetwork.dll

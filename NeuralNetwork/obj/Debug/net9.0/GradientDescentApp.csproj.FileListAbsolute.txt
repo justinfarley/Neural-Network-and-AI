@@ -1,0 +1,14 @@
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.AssemblyInfoInputs.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.AssemblyInfo.cs
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.csproj.CoreCompileInputs.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\bin\Debug\net9.0\GradientDescentApp.exe
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\bin\Debug\net9.0\GradientDescentApp.deps.json
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\bin\Debug\net9.0\GradientDescentApp.runtimeconfig.json
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\bin\Debug\net9.0\GradientDescentApp.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\bin\Debug\net9.0\GradientDescentApp.pdb
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\refint\GradientDescentApp.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.pdb
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\GradientDescentApp.genruntimeconfig.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\GradientDescentApp\obj\Debug\net9.0\ref\GradientDescentApp.dll
