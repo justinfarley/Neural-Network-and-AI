@@ -4,17 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using GradientDescentApp;
+using Neural_Network_and_AI;
 
-namespace GradientDescentApp
+namespace Neural_Network_and_AI
 {
     public class HiddenNode : Node
     {
         public float bias;
-        protected List<Weight> outgoingWeights;
-        protected List<Weight> incomingWeights;
-        
-
         public HiddenNode(float bias)
         {
             this.bias = bias;
@@ -22,14 +18,7 @@ namespace GradientDescentApp
             incomingWeights = new List<Weight>();
         }
 
-        public void AddOutgoingWeight(Weight weight)
-        {
-            outgoingWeights.Add(weight);
-        }
-        public void AddIncomingWeight(Weight weight)
-        {
-            incomingWeights.Add(weight);
-        }
+
 
         //z1 = w1x1 + w2x2 + b
         public void Activation()

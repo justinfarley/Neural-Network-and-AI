@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GradientDescentApp
+namespace Neural_Network_and_AI
 {
     public static class MathUtil
     {
@@ -20,14 +20,19 @@ namespace GradientDescentApp
             return totalLoss;
         }
 
-        public static float GetOutputParameterGradient(float error, float activation)
+        public static float GetOutputParameterGradient(float error, float activationPrevLayer)
         {
-            return error * activation;
+            return error * activationPrevLayer;
         }
 
         public static float GetInputParameterGradient(float hiddenError, float reluDerivative, float xValue)
         {
             return hiddenError * reluDerivative * xValue;
+        }
+        
+        public static float GetMiddleLayerParameterGradient(float hiddenError, float reluDerivative, float activationPrevLayer)
+        {
+            return hiddenError * reluDerivative * activationPrevLayer;
         }
 
         public static float UpdateParameter(float oldParameter, float learningRate, float gradient)

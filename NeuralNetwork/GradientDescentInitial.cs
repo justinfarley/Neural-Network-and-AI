@@ -6,8 +6,8 @@
 // var lines = File.ReadAllLines("data.csv");
 // List<float> Xs = new List<float>();
 // List<float> Ys = new List<float>();
-// float learningRate = 0.01f;
-// int iterations = 10000;
+// float learningRate = 0.0000001f;
+// int iterations = 2000000;
 
 // Func<float, float, float, float> linearModel = (theta1, X, theta0) => theta1*X + theta0;
 

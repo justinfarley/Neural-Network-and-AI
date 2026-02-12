@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GradientDescentApp
+namespace Neural_Network_and_AI
 {
     public class Weight
     {
@@ -16,6 +16,9 @@ namespace GradientDescentApp
             this.prev = prev;
             this.next = next;
             this.value = value;
+            
+            prev.AddOutgoingWeight(this);
+            next.AddIncomingWeight(this);
         }
     }
 }

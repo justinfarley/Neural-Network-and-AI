@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GradientDescentApp
+namespace Neural_Network_and_AI
 {
     public class InputNode : Node
     {
