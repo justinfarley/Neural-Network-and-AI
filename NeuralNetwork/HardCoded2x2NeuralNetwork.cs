@@ -1,3 +1,22 @@
+/// Author: Justin Farley
+/// 
+/// So I initially made this file to test out my understanding and the math that I implemented
+/// in <see cref="Neural_Network_and_AI.MathUtil"/> To get a base before I created
+/// a generic Neural Network (<see cref="Neural_Network_and_AI.NeuralNetwork"/>).
+/// 
+/// For reference, this is a 2x2 Neural Network comprised of the following:
+/// - 2 input nodes (x1, x2)
+/// - 1 hidden layer consisting of 2 hidden nodes (h1, h2)
+/// - 2 output nodes (y1, y2)
+/// 
+///     Connections with my terrible ASCII art:
+///         x1---h1---y1
+///           \/   \/    
+///           /\   /\
+///         x2---h2---y2
+/// 
+
+
 // using System;
 // using System.Collections.Generic;
 // using System.IO;

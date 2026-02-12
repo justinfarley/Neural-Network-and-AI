@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+/// <summary>
+/// Input node:
+/// pretty straight forward, just holds the x value.
+/// </summary>
 namespace Neural_Network_and_AI
 {
     public class InputNode : Node

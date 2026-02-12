@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Neural_Network_and_AI;
 using static Neural_Network_and_AI.MathUtil;
 
-
+/// <summary>
+/// Author: Justin Farley
+/// 
+/// This was fun to build
+/// </summary>
 namespace Neural_Network_and_AI
 {
     public class NeuralNetwork

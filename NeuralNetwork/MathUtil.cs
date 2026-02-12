@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+/// <summary>
+/// Just a Util class. Some methods repeat but the naming was helping me 
+/// keep track of the backpropagation process, so I left them as is.
+/// </summary>
 namespace Neural_Network_and_AI
 {
     public static class MathUtil

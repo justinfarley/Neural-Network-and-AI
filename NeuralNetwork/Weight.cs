@@ -1,8 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+/// <summary>
+/// The Weights!
+/// Weights are the connections between the nodes. 
+/// They have a value, and they also have a reference to the previous node and the next node
+/// of which they are connected.
+/// The value is their bias, which starts random and is adjusted during backpropagation.
+/// </summary>
 namespace Neural_Network_and_AI
 {
     public class Weight

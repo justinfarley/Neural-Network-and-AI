@@ -1,3 +1,17 @@
+/// Author: Justin Farley
+/// 
+/// This file was my initial understanding of basic Gradient Descent 
+/// before tackling neural networks themselves.
+/// Since this gradient descent weight update logic is used in neural networks
+/// this was a good starting point. It was also very cool to see it "learn" the equation
+/// (it was even cooler seeing it learn the values themselves <see cref="Neural_Network_and_AI.NeuralNetwork"/>)
+/// 
+
+
+
+
+
+
 // using System;
 // using System.Collections.Generic;
 // using System.IO;

@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Neural_Network_and_AI;
-
+/// <summary>
+/// The Hidden Node. Used in the hidden layers of the neural network
+/// between the input and output layers. Each node has an activation function which is 
+/// w1x1 + w2x2 + ... + b, where w is the weight of the connection, 
+/// x is the x value, and b is the bias. 
+/// The equation is then passed through a ReLU function to see if the neuron "fires" or not.
+/// </summary>
 namespace Neural_Network_and_AI
 {
     public class HiddenNode : Node
@@ -14,8 +13,6 @@ namespace Neural_Network_and_AI
         public HiddenNode(float bias)
         {
             this.bias = bias;
-            outgoingWeights = new List<Weight>();
-            incomingWeights = new List<Weight>();
         }
 
 
