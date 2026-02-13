@@ -16,7 +16,7 @@ using Neural_Network_and_AI;
 
 NeuralNetwork nn = new NeuralNetwork(0.0000001f, "data.csv", 3, 15);
 nn.NetworkInit();
-nn.Train(35);
+nn.Train(50);
 
 var testData1 = new List<float> { 1f, 2f, 3f, 4f, 5f };
 var testData2 = new List<float> { 6f, 7f, 8f, 9f, 10f };

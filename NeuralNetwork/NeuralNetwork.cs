@@ -184,7 +184,6 @@ namespace Neural_Network_and_AI
                 // SOLVE HIDDEN LAYER(S) WEIGHT GRADIENTS AND INPUT LAYER WEIGHT GRADIENTS
                 for(int j = hiddenLayers - 1; j >= 1; j--)
                 {
-                    Console.WriteLine($"Updating biases for hidden layer {j + 1}");
                     foreach(var hiddenNode in hiddenNodes[j])
                     {
                         foreach(var weight in hiddenNode.incomingWeights)
@@ -197,7 +196,6 @@ namespace Neural_Network_and_AI
                 }
 
                 //SOLVE INPUT LAYER WEIGHT GRADIENTS
-                Console.WriteLine($"Updating biases for hidden layer 1");
                 foreach(var hiddenNode in hiddenNodes[0])
                 {
                     foreach(var weight in hiddenNode.incomingWeights)
@@ -221,6 +219,12 @@ namespace Neural_Network_and_AI
                         hiddenNode.bias = UpdateParameter(hiddenNode.bias, learningRate, biasGradients[hiddenNode]);
                     }
                 }   
+                
+                // Apply output node bias updates (if computed)
+                foreach (var outputNode in outputNodes)
+                {
+                    outputNode.bias = UpdateParameter(outputNode.bias, learningRate, biasGradients[outputNode]);
+                }
             }
             Console.WriteLine("Training Done!");
         }
