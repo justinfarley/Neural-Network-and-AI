@@ -111,30 +111,48 @@ namespace Neural_Network_and_AI
             }
         }
 
+        private List<float> ForwardPass(List<float> Xs = null)
+        {
+            if(Xs != null)
+            {
+                for(int i = 0; i < inputNodes.Count; i++)
+                {
+                    inputNodes[i].value = Xs[i];
+                }
+            }
+
+            foreach(var kvp in hiddenNodes)
+            {
+                foreach(var hiddenNode in kvp.Value)
+                {
+                    hiddenNode.Activation();
+                }
+            }
+
+            List<float> predictedValues = new List<float>();
+            for(int j = 0; j < outputNodes.Count; j++)
+            {
+                var outputNode = outputNodes[j];
+                outputNode.Prediction();
+                outputNode.error = GetOutputNodeError(outputNode.value, Ys[j]);
+                predictedValues.Add(outputNode.value);
+            }
+            return predictedValues;
+        }
+
+        public void Predict(List<float> Xs)
+        {
+            List<float> results = ForwardPass(Xs);
+            Console.WriteLine($"Predictions: {string.Join(", ", results.Select((x, idx) => $"y{idx + 1}={x}"))}");
+        }
+
         public void Train(int iterations)
         {
             // implement training loop here
             for (int i = 0; i < iterations; i++)
             {
                 // Forward pass
-                foreach(var kvp in hiddenNodes)
-                {
-                    foreach(var hiddenNode in kvp.Value)
-                    {
-                        hiddenNode.Activation();
-                    }
-                }
-
-                List<float> predictedValues = new List<float>();
-                for(int j = 0; j < outputNodes.Count; j++)
-                {
-                    var outputNode = outputNodes[j];
-                    outputNode.Prediction();
-                    outputNode.error = GetOutputNodeError(outputNode.value, Ys[j]);
-                    predictedValues.Add(outputNode.value);
-                }
-
-                Console.WriteLine($"Iteration: {i + 1} FORWARD PASS: Predictions: {string.Join(", ", predictedValues.Select((x, idx) => $"y{idx + 1}={x}"))}, loss = {CalculateLoss(predictedValues, Ys, Xs)}");
+                ForwardPass();
 
 
                 //START BACKWARDS PASS
@@ -204,6 +222,7 @@ namespace Neural_Network_and_AI
                     }
                 }   
             }
+            Console.WriteLine("Training Done!");
         }
 
     }

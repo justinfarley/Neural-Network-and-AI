@@ -18,3 +18,8 @@ NeuralNetwork nn = new NeuralNetwork(0.0000001f, "data.csv", 3, 15);
 nn.NetworkInit();
 nn.Train(35);
 
+var testData1 = new List<float> { 1f, 2f, 3f, 4f, 5f };
+var testData2 = new List<float> { 6f, 7f, 8f, 9f, 10f };
+
+nn.Predict(testData1);  //should match data.csv
+nn.Predict(testData2); //NNs prediction of 6,7,8,9,10
