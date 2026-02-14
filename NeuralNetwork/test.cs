@@ -1,3 +1,4 @@
+using System.Drawing;
 using Neural_Network_and_AI;
 
 /// <summary>
@@ -14,12 +15,99 @@ using Neural_Network_and_AI;
 /// 
 /// </summary>
 
-NeuralNetwork nn = new NeuralNetwork(0.0000001f, "data.csv", 3, 15);
+List<Tuple<string, List<float>>> imageFloatArrays = new List<Tuple<string, List<float>>>();
+string imgExtension = ".jpg";
+var imageFiles = new List<string>();
+List<float> outputLabels = new List<float>();
+
+// Debug: Check current working directory
+Console.WriteLine($"Current working directory: {Directory.GetCurrentDirectory()}");
+
+NeuralNetwork nn2 = new NeuralNetwork(0.000001f, 5, 5, 2, 5);
+nn2.NetworkInit();
+nn2.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 1000);
+nn2.Predict(new List<float> { 1f,2f,3f,4f,5f });
+nn2.Predict(new List<float> { 6f, 7f, 8f, 9f, 10f });
+
+
+
+// Navigate up to project root and to fruitsTrainingData
+string basePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../fruitsTrainingData/train/train");
+string[] categories = 
+{ "Apple Braeburn", "Apple Granny Smith", 
+"Apricot", "Banana", "Blueberry",
+ "Cactus Fruit", "Cantaloupe", 
+ "Cherry", "Clementine", "Corn", "Cucumber Ripe",
+ "Grape Blue", "Kiwi", "Lemon",
+ "Limes", "Mango", "Onion White",
+ "Orange", "Papaya", "Passion Fruit",
+ "Peach", "Pear", "Pepper Green",
+ "Pepper Red", "Pineapple", "Plum",
+ "Pomegranate", "Potato Red", "Raspberry",
+ "Strawberry", "Tomato", "Watermelon" };
+
+float[] GetOneHotEncodedArr(string category, string[] categories)
+{
+    float[] vector = new float[categories.Length];
+    for (int i = 0; i < categories.Length; i++)
+    {
+        vector[i] = categories[i] == category ? 1.0f : 0.0f;
+    }
+    return vector;
+}
+Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
+
+foreach(var imageDirectory in categories)
+{
+    var files = Directory.GetFiles($"fruitsTrainingData/train/train/{imageDirectory}", "*" + imgExtension);
+    Console.WriteLine($"Directory: {imageDirectory}, Files found: {files.Length}");
+    foreach(var imageFile in files)
+    {
+        Bitmap bitmap = new Bitmap(imageFile);
+        var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
+        imageFloatArrays.Add(new Tuple<string, List<float>>(imageDirectory, floatArray.ToList()));
+    }
+    outputLabels.Add(Array.IndexOf(categories, imageDirectory));
+}
+
+Console.WriteLine($"Total images loaded: {imageFloatArrays.Count}, Labels: {outputLabels.Count}");
+
+if (imageFloatArrays.Count == 0)
+{
+    Console.WriteLine("ERROR: No images loaded! Check your directory paths.");
+    return;
+}
+
+//30000 pixels, 32 fruit classes, 3 hidden layers with 128 nodes each.
+NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
 nn.NetworkInit();
-nn.Train(50);
 
-var testData1 = new List<float> { 1f, 2f, 3f, 4f, 5f };
-var testData2 = new List<float> { 6f, 7f, 8f, 9f, 10f };
+Random random = new Random();
+List<List<float>> allInputs = new List<List<float>>();
+List<List<float>> allExpected = new List<List<float>>();
+var shuffled = imageFloatArrays.OrderBy(x => random.Next()).ToList();
+foreach (var (category, imageArray) in shuffled.Take(500))
+{
+    allInputs.Add(imageArray);
+    allExpected.Add(categoryToOneHot[category].ToList());
+}
+nn.Train(allInputs, allExpected, 50, NeuralNetwork.PredictionMethod.Softmax); // Train 1 iteration per image
+Console.WriteLine($"Trained!!!");
 
-nn.Predict(testData1);  //should match data.csv
-nn.Predict(testData2); //NNs prediction of 6,7,8,9,10
+var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + imgExtension);
+for(int i = 0; i < testFiles.Length; i++)
+{
+    if(i == 100) break;
+    Bitmap bitmap = new Bitmap(testFiles[i]);
+    var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
+    Console.WriteLine($"File {testFiles[i]}");
+    var results = nn.Predict(floatArray.ToList(), NeuralNetwork.PredictionMethod.Softmax);
+    float bestClassification = results.Max();
+    float percentagePrediction = bestClassification * 100;
+    int idx = results.IndexOf(bestClassification);
+
+    Console.WriteLine($"Prediction: {percentagePrediction}% chance to be a {categories[idx]}");
+
+}
+
+//TODO: 

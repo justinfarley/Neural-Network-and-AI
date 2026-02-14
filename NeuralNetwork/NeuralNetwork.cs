@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using static Neural_Network_and_AI.MathUtil;
 
 /// <summary>
@@ -9,38 +10,36 @@ namespace Neural_Network_and_AI
 {
     public class NeuralNetwork
     {
+        public enum PredictionMethod{
+            Linear,
+            Softmax
+        }
         public float learningRate = 0.01f;
         private int hiddenLayers;
         private int hiddenNodesPerLayer;
-        public List<float> Xs = new List<float>();
-        public List<float> Ys = new List<float>();
+        private int inputSize;
+        private int outputSize;
         private List<InputNode> inputNodes = new List<InputNode>();
         private List<OutputNode> outputNodes = new List<OutputNode>();
         private Dictionary<int, List<HiddenNode>> hiddenNodes = new Dictionary<int, List<HiddenNode>>();
         private List<Weight> weights = new List<Weight>();
 
 
-        public NeuralNetwork(float learningRate, List<float> Xs, List<float> Ys, int hiddenLayers = -1, int hiddenNodesPerLayer = -1)
+        public NeuralNetwork(float learningRate, int inputSize, int outputSize, int hiddenLayers, int hiddenNodesPerLayer)
         {
             this.learningRate = learningRate;
-            this.Xs = Xs;
-            this.Ys = Ys;
-            this.hiddenLayers = hiddenLayers == -1 ? Xs.Count / 2 : hiddenLayers;
-            this.hiddenNodesPerLayer = hiddenNodesPerLayer == -1 ? Xs.Count : hiddenNodesPerLayer;
+            this.hiddenLayers = hiddenLayers;
+            this.hiddenNodesPerLayer = hiddenNodesPerLayer;
+            this.inputSize = inputSize;
+            this.outputSize = outputSize;
         }
 
-        public NeuralNetwork(float learningRate, string file, int hiddenLayers = -1, int hiddenNodesPerLayer = -1)
+        private float GetWeightValue(Random random, int prevLayerCount)
         {
-            this.learningRate = learningRate;
-            var lines = File.ReadAllLines(file);
-            foreach (var line in lines)
-            {
-                var parts = line.Split(',');
-                Xs.Add(float.Parse(parts[0]));
-                Ys.Add(float.Parse(parts[1]));
-            }
-            this.hiddenLayers = hiddenLayers == -1 ? Xs.Count / 2 : hiddenLayers;
-            this.hiddenNodesPerLayer = hiddenNodesPerLayer == -1 ? Xs.Count : hiddenNodesPerLayer;
+            float fanIn = prevLayerCount; // number of incoming connections
+            float scale = MathF.Sqrt(2f / fanIn);
+            float weightValue = ((float)random.NextDouble() * 2f - 1f) * scale;
+            return weightValue;
         }
 
         public void NetworkInit()
@@ -49,9 +48,9 @@ namespace Neural_Network_and_AI
 
 
             //make input nodes
-            for(int i = 0; i < Xs.Count; i++)
+            for(int i = 0; i < inputSize; i++)
             {
-                InputNode input = new InputNode(Xs[i]);
+                InputNode input = new InputNode(0);
                 inputNodes.Add(input);
             }
 
@@ -59,7 +58,7 @@ namespace Neural_Network_and_AI
             hiddenNodes[0] = new List<HiddenNode>();    
             for(int j = 0; j < hiddenNodesPerLayer; j++)
             {
-                HiddenNode hiddenNode = new HiddenNode((float)random.NextDouble());
+                HiddenNode hiddenNode = new HiddenNode(GetWeightValue(random, inputNodes.Count));
                 hiddenNodes[0].Add(hiddenNode);
             }
 
@@ -68,7 +67,7 @@ namespace Neural_Network_and_AI
             {
                 foreach(var inputNode in inputNodes)
                 {
-                    Weight weight = new Weight(inputNode, hiddenNode, (float)random.NextDouble());
+                    Weight weight = new Weight(inputNode, hiddenNode, GetWeightValue(random, inputNodes.Count));
                     weights.Add(weight);
                 }
             }
@@ -80,7 +79,7 @@ namespace Neural_Network_and_AI
                 hiddenNodes[i] = new List<HiddenNode>();
                 for(int j = 0; j < hiddenNodesPerLayer; j++)
                 {
-                    HiddenNode hiddenNode = new HiddenNode((float)random.NextDouble());
+                    HiddenNode hiddenNode = new HiddenNode(GetWeightValue(random, hiddenNodesPerLayer));
                     hiddenNodes[i].Add(hiddenNode);
                 }
             }
@@ -92,33 +91,31 @@ namespace Neural_Network_and_AI
                     if(kvp.Key == 0) continue; //skip the first layer since we already connected it to the input nodes
                     foreach(var prevHiddenNode in hiddenNodes[kvp.Key - 1])
                     {
-                        Weight weight = new Weight(prevHiddenNode, hiddenNode, (float)random.NextDouble());
+                        Weight weight = new Weight(prevHiddenNode, hiddenNode, GetWeightValue(random, hiddenNodesPerLayer));
                         weights.Add(weight);
                     }
                 }
             }
 
             //Now create output nodes
-            for(int i = 0; i < Ys.Count; i++)
+            for(int i = 0; i < outputSize; i++)
             {
                 OutputNode outputNode = new OutputNode((float)random.NextDouble());
                 outputNodes.Add(outputNode);
                 foreach(var hiddenNode in hiddenNodes[hiddenLayers - 1])
                 {
-                    Weight weight = new Weight(hiddenNode, outputNode, (float)random.NextDouble());
+                    Weight weight = new Weight(hiddenNode, outputNode, GetWeightValue(random, hiddenNodesPerLayer));
                     weights.Add(weight);
                 }
             }
         }
 
-        private List<float> ForwardPass(List<float> Xs = null)
+        private List<float> ForwardPass(List<float> input, PredictionMethod method = PredictionMethod.Linear, List<float> expected = null)
         {
-            if(Xs != null)
+
+            for(int i = 0; i < inputNodes.Count; i++)
             {
-                for(int i = 0; i < inputNodes.Count; i++)
-                {
-                    inputNodes[i].value = Xs[i];
-                }
+                inputNodes[i].value = input[i];
             }
 
             foreach(var kvp in hiddenNodes)
@@ -130,32 +127,42 @@ namespace Neural_Network_and_AI
             }
 
             List<float> predictedValues = new List<float>();
+
             for(int j = 0; j < outputNodes.Count; j++)
             {
                 var outputNode = outputNodes[j];
                 outputNode.Prediction();
-                outputNode.error = GetOutputNodeError(outputNode.value, Ys[j]);
+                if(expected != null && method == PredictionMethod.Linear)
+                    outputNode.error = GetOutputNodeError(outputNode.value, expected[j]);
                 predictedValues.Add(outputNode.value);
+            }
+            if(method != PredictionMethod.Softmax)
+                Console.WriteLine($"Loss (MSE): {MathUtil.MSELoss(expected ?? new List<float>(), predictedValues)}");
+
+            if(method == PredictionMethod.Softmax)
+            {
+                predictedValues = new List<float>();
+                var rawOutputs = outputNodes.Select(x => x.value).ToArray();
+
+                float max = rawOutputs.Max();
+                float sums = rawOutputs.Sum(x => MathF.Exp(x - max));
+
+                for (int i = 0; i < outputNodes.Count; i++)
+                {
+                    float softmaxVal = MathF.Exp(rawOutputs[i] - max) / sums;
+                    outputNodes[i].value = softmaxVal;
+                    predictedValues.Add(softmaxVal);
+
+                    if(expected != null)
+                        outputNodes[i].error = softmaxVal - expected[i];
+                }
             }
             return predictedValues;
         }
 
-        public void Predict(List<float> Xs)
+        public void BackwardsPass()
         {
-            List<float> results = ForwardPass(Xs);
-            Console.WriteLine($"Predictions: {string.Join(", ", results.Select((x, idx) => $"y{idx + 1}={x}"))}");
-        }
-
-        public void Train(int iterations)
-        {
-            // implement training loop here
-            for (int i = 0; i < iterations; i++)
-            {
-                // Forward pass
-                ForwardPass();
-
-
-                //START BACKWARDS PASS
+            //START BACKWARDS PASS
                 Dictionary<Weight, float> weightGradients = new Dictionary<Weight, float>(); 
                 Dictionary<Node, float> biasGradients = new Dictionary<Node, float>(); 
                 foreach(var outputNode in outputNodes)
@@ -171,14 +178,16 @@ namespace Neural_Network_and_AI
                 }
 
                 //UPDATE HIDDEN ERRORS AND RELU DERIVATIVES
-                Dictionary<HiddenNode, float> hiddenErrors = new Dictionary<HiddenNode, float>();
-                Dictionary<HiddenNode, float> reluDerivatives = new Dictionary<HiddenNode, float>();
-                foreach(var kvp in hiddenNodes)
+                for (int j = hiddenLayers - 1; j >= 0; j--)
                 {
-                    foreach(var hiddenNode in kvp.Value)
+                    foreach (var hiddenNode in hiddenNodes[j])
                     {
-                        hiddenErrors[hiddenNode] = hiddenNode.HiddenNodeError();
-                        reluDerivatives[hiddenNode] = hiddenNode.value > 0 ? 1 : 0;
+                        float error = 0;
+                        foreach (var outgoingWeight in hiddenNode.outgoingWeights)
+                        {
+                            error += outgoingWeight.next.error * outgoingWeight.value;
+                        }
+                        hiddenNode.error = error * (hiddenNode.value > 0 ? 1.0f : 0.0f); 
                     }
                 }
                 // SOLVE HIDDEN LAYER(S) WEIGHT GRADIENTS AND INPUT LAYER WEIGHT GRADIENTS
@@ -188,10 +197,10 @@ namespace Neural_Network_and_AI
                     {
                         foreach(var weight in hiddenNode.incomingWeights)
                         {
-                            float gradient = GetMiddleLayerParameterGradient(hiddenErrors[hiddenNode], reluDerivatives[hiddenNode], weight.prev.value);
+                            float gradient = hiddenNode.error * weight.prev.value;;
                             weightGradients[weight] = gradient;
                         }
-                        biasGradients[hiddenNode] = GetMiddleLayerParameterGradient(hiddenErrors[hiddenNode], reluDerivatives[hiddenNode], 1f); //bias is always 1
+                        biasGradients[hiddenNode] = hiddenNode.error; //bias is always 1
                     }
                 }
 
@@ -200,10 +209,10 @@ namespace Neural_Network_and_AI
                 {
                     foreach(var weight in hiddenNode.incomingWeights)
                     {
-                        float gradient = GetInputParameterGradient(hiddenErrors[hiddenNode], reluDerivatives[hiddenNode], weight.prev.value);
+                        float gradient = hiddenNode.error * weight.prev.value;
                         weightGradients[weight] = gradient;
                     }
-                    biasGradients[hiddenNode] = GetInputParameterGradient(hiddenErrors[hiddenNode], reluDerivatives[hiddenNode], 1f); //bias is always 1
+                    biasGradients[hiddenNode] = hiddenNode.error; //bias is always 1
                 }
 
                 //UPDATE PARAMETERS!!
@@ -211,6 +220,8 @@ namespace Neural_Network_and_AI
                 {
                     weight.value = UpdateParameter(weight.value, learningRate, weightGradients[weight]);
                 }
+
+                //Console.WriteLine($"First weight: {inputNodes[0].outgoingWeights[0].value}");
 
                 foreach(var kvp in hiddenNodes)
                 {
@@ -225,9 +236,42 @@ namespace Neural_Network_and_AI
                 {
                     outputNode.bias = UpdateParameter(outputNode.bias, learningRate, biasGradients[outputNode]);
                 }
-            }
-            Console.WriteLine("Training Done!");
+                weightGradients.Clear();
+                biasGradients.Clear();
         }
 
+        public List<float> Predict(List<float> input, PredictionMethod method = PredictionMethod.Linear)
+        {
+            List<float> results = ForwardPass(input, method);
+            return results;
+        }
+
+        public void Train(List<List<float>> inputs, List<List<float>> expected, int iterations, PredictionMethod method = PredictionMethod.Linear)
+        {
+            for(int j = 0; j < iterations; j++)
+            {
+                float totalLoss = 0;
+                for(int i = 0; i < inputs.Count; i++)
+                {
+                    var preds = ForwardPass(inputs[i], method, expected[i]);
+
+                    BackwardsPass();              
+                    totalLoss += CrossEntropyLoss(preds, expected[i]);
+                }
+                float avgLoss = totalLoss / inputs.Count;
+                Console.WriteLine($"Epoch {j + 1}/{iterations} - Avg Loss: {avgLoss}");
+            }
+        }
+
+        public void Train(List<float> inputs, List<float> expected, int iterations, PredictionMethod method = PredictionMethod.Linear)
+        {
+            for (int i = 0; i < iterations; i++)
+            {
+                // Forward pass
+                ForwardPass(inputs, method, expected);
+
+                BackwardsPass();
+            }
+        }
     }
 }

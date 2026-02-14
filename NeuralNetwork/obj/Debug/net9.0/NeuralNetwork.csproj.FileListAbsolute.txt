@@ -14,3 +14,8 @@ C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork
 C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.pdb
 C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.genruntimeconfig.cache
 C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\ref\NeuralNetwork.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNetwork.csproj.AssemblyReference.cache
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\System.Drawing.Common.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\bin\Debug\net9.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\j\source\repos\NEURAL NETWORK STUFF\Neural-Network-and-AI\NeuralNetwork\obj\Debug\net9.0\NeuralNe.3CC73622.Up2Date

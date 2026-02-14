@@ -6,17 +6,30 @@ namespace Neural_Network_and_AI
 {
     public static class MathUtil
     {
-        public static float CalculateLoss(List<float> predictedValues, List<float> actualValues, List<float> xValues)
+        public static float MSELoss(List<float> predictedValues, List<float> actualValues)
         {
             float totalLoss = 0;
-            for (int i = 0; i < xValues.Count; i++)
+            for (int i = 0; i < predictedValues.Count; i++)
             {
                 float MSE = MathF.Pow(predictedValues[i] - actualValues[i], 2);
                 totalLoss += MSE;
             }
-            totalLoss /= xValues.Count;
+            totalLoss /= predictedValues.Count;
 
             return totalLoss;
+        }
+
+        public static float CrossEntropyLoss(List<float> predicted, List<float> actual)
+        {
+            if(actual.Count <= 0) return -1;
+
+            float loss = 0;
+            for (int i = 0; i < predicted.Count; i++)
+            {
+                float p = Math.Max(predicted[i], 1e-15f);
+                loss -= actual[i] * MathF.Log(p);
+            }
+            return loss;
         }
 
         public static float GetOutputParameterGradient(float error, float activationPrevLayer)
