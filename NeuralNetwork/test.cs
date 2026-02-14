@@ -78,7 +78,7 @@ if (imageFloatArrays.Count == 0)
     return;
 }
 
-//30000 pixels, 32 fruit classes, 3 hidden layers with 128 nodes each.
+//3072 pixels (compressed 32x32 img), 32 fruit classes, 3 hidden layers with 128 nodes each.
 NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
 nn.NetworkInit();
 
@@ -86,7 +86,7 @@ Random random = new Random();
 List<List<float>> allInputs = new List<List<float>>();
 List<List<float>> allExpected = new List<List<float>>();
 var shuffled = imageFloatArrays.OrderBy(x => random.Next()).ToList();
-foreach (var (category, imageArray) in shuffled.Take(500))
+foreach (var (category, imageArray) in shuffled.Take(1000))
 {
     allInputs.Add(imageArray);
     allExpected.Add(categoryToOneHot[category].ToList());
@@ -97,7 +97,7 @@ Console.WriteLine($"Trained!!!");
 var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + imgExtension);
 for(int i = 0; i < testFiles.Length; i++)
 {
-    if(i == 100) break;
+    if(i == 50) break;
     Bitmap bitmap = new Bitmap(testFiles[i]);
     var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
     Console.WriteLine($"File {testFiles[i]}");
@@ -110,4 +110,4 @@ for(int i = 0; i < testFiles.Length; i++)
 
 }
 
-//TODO: 
+//TODO: implement exporting models and loading them so that you can train once and use a model
