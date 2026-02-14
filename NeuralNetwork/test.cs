@@ -23,11 +23,10 @@ List<float> outputLabels = new List<float>();
 // Debug: Check current working directory
 Console.WriteLine($"Current working directory: {Directory.GetCurrentDirectory()}");
 
-NeuralNetwork nn2 = new NeuralNetwork(0.000001f, 5, 5, 2, 5);
+NeuralNetwork nn2 = new NeuralNetwork(0.01f, 5, 5, 2, 5);
 nn2.NetworkInit();
-nn2.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 1000);
-nn2.Predict(new List<float> { 1f,2f,3f,4f,5f });
-nn2.Predict(new List<float> { 6f, 7f, 8f, 9f, 10f });
+nn2.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 5000);
+nn2.Predict(new List<float> { 1f,2f,3f,4f,5f }).ForEach(x => Console.Write(x + ", "));
 
 
 
