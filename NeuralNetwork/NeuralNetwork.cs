@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using static Neural_Network_and_AI.MathUtil;
 
 /// <summary>
@@ -34,7 +33,7 @@ namespace Neural_Network_and_AI
             this.outputSize = outputSize;
         }
 
-        private float GetWeightValue(Random random, int prevLayerCount)
+        private static float GetWeightValue(Random random, int prevLayerCount)
         {
             float fanIn = prevLayerCount; // number of incoming connections
             float scale = MathF.Sqrt(2f / fanIn);
@@ -45,7 +44,6 @@ namespace Neural_Network_and_AI
         public void NetworkInit()
         {
             Random random = new Random();        
-
 
             //make input nodes
             for(int i = 0; i < inputSize; i++)
@@ -84,6 +82,7 @@ namespace Neural_Network_and_AI
                 }
             }
 
+            //Add weights to hidden nodes
             foreach(KeyValuePair<int, List<HiddenNode>> kvp in hiddenNodes)
             {
                 foreach(var hiddenNode in kvp.Value)
@@ -118,6 +117,7 @@ namespace Neural_Network_and_AI
                 inputNodes[i].value = input[i];
             }
 
+            //Calculate Z values
             foreach(var kvp in hiddenNodes)
             {
                 foreach(var hiddenNode in kvp.Value)
@@ -126,8 +126,8 @@ namespace Neural_Network_and_AI
                 }
             }
 
+            //For each output node, make a prediction
             List<float> predictedValues = new List<float>();
-
             for(int j = 0; j < outputNodes.Count; j++)
             {
                 var outputNode = outputNodes[j];
@@ -139,8 +139,12 @@ namespace Neural_Network_and_AI
             if(method != PredictionMethod.Softmax)
                 Console.WriteLine($"Loss (MSE): {MathUtil.MSELoss(expected ?? new List<float>(), predictedValues)}");
 
+
+            //If we are using softmax (classification) then we convert output values to percentages after calculating raw
+            //regression outputs
             if(method == PredictionMethod.Softmax)
             {
+                //Reset predictedValues as we are using the new percentage predictions
                 predictedValues = new List<float>();
                 var rawOutputs = outputNodes.Select(x => x.value).ToArray();
 
@@ -262,7 +266,6 @@ namespace Neural_Network_and_AI
                 Console.WriteLine($"Epoch {j + 1}/{iterations} - Avg Loss: {avgLoss}");
             }
         }
-
         public void Train(List<float> inputs, List<float> expected, int iterations, PredictionMethod method = PredictionMethod.Linear)
         {
             for (int i = 0; i < iterations; i++)

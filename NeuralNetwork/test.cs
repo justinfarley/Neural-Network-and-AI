@@ -31,7 +31,6 @@ nn2.Predict(new List<float> { 1f,2f,3f,4f,5f }).ForEach(x => Console.Write(x + "
 
 
 // Navigate up to project root and to fruitsTrainingData
-string basePath = Path.Combine(Directory.GetCurrentDirectory(), "../../../fruitsTrainingData/train/train");
 string[] categories = 
 { "Apple Braeburn", "Apple Granny Smith", 
 "Apricot", "Banana", "Blueberry",
@@ -54,19 +53,24 @@ float[] GetOneHotEncodedArr(string category, string[] categories)
     }
     return vector;
 }
+
+//Store OneHot encoded outputs, example: [0f,0f,0f,0f,0f,1f,0f,0f,0f,...,0f] indicates 6th category output (Cactus Fruit)
 Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
 
-foreach(var imageDirectory in categories)
+//Get images from each category dir
+foreach(var category in categories)
 {
-    var files = Directory.GetFiles($"fruitsTrainingData/train/train/{imageDirectory}", "*" + imgExtension);
-    Console.WriteLine($"Directory: {imageDirectory}, Files found: {files.Length}");
+    var files = Directory.GetFiles($"fruitsTrainingData/train/train/{category}", "*" + imgExtension);
+    Console.WriteLine($"Directory: {category}, Files found: {files.Length}");
     foreach(var imageFile in files)
     {
         Bitmap bitmap = new Bitmap(imageFile);
         var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
-        imageFloatArrays.Add(new Tuple<string, List<float>>(imageDirectory, floatArray.ToList()));
+
+        //Store category and corresponding pixel float data for use later
+        imageFloatArrays.Add(new Tuple<string, List<float>>(category, floatArray.ToList()));
     }
-    outputLabels.Add(Array.IndexOf(categories, imageDirectory));
+    outputLabels.Add(Array.IndexOf(categories, category));
 }
 
 Console.WriteLine($"Total images loaded: {imageFloatArrays.Count}, Labels: {outputLabels.Count}");
@@ -77,34 +81,47 @@ if (imageFloatArrays.Count == 0)
     return;
 }
 
-//3072 pixels (compressed 32x32 img), 32 fruit classes, 3 hidden layers with 128 nodes each.
+//3072 pixels (compressed 32x32 img * 3 RGB values each = 3072), 32 fruit classes, 3 hidden layers with 128 nodes each.
 NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
 nn.NetworkInit();
 
 Random random = new Random();
 List<List<float>> allInputs = new List<List<float>>();
 List<List<float>> allExpected = new List<List<float>>();
+
+//Shuffle the images so that we get random fruits and not all of one
 var shuffled = imageFloatArrays.OrderBy(x => random.Next()).ToList();
+
+//Only taking 1000 images due to testing / time constraints
 foreach (var (category, imageArray) in shuffled.Take(1000))
 {
     allInputs.Add(imageArray);
     allExpected.Add(categoryToOneHot[category].ToList());
 }
-nn.Train(allInputs, allExpected, 50, NeuralNetwork.PredictionMethod.Softmax); // Train 1 iteration per image
+
+//Train neural network based on all of the inputs and expected data for 50 iterations using Softmax for classification
+nn.Train(allInputs, allExpected, 50, NeuralNetwork.PredictionMethod.Softmax); 
 Console.WriteLine($"Trained!!!");
 
+//Get Test files
 var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + imgExtension);
 for(int i = 0; i < testFiles.Length; i++)
 {
+    //Just predicting first 50 images for testing
     if(i == 50) break;
     Bitmap bitmap = new Bitmap(testFiles[i]);
     var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
     Console.WriteLine($"File {testFiles[i]}");
-    var results = nn.Predict(floatArray.ToList(), NeuralNetwork.PredictionMethod.Softmax);
-    float bestClassification = results.Max();
-    float percentagePrediction = bestClassification * 100;
-    int idx = results.IndexOf(bestClassification);
 
+    //Predict the test image with softmax and get results
+    var results = nn.Predict(floatArray.ToList(), NeuralNetwork.PredictionMethod.Softmax);
+    
+    //Since we are using softmax, it converts the y values to percentages. The best percentage is the most accurate prediction
+    float bestClassification = results.Max();
+    float percentagePrediction = bestClassification * 100; //Convert to percentage
+    int idx = results.IndexOf(bestClassification); //Corresponding category index
+
+    //Print results!
     Console.WriteLine($"Prediction: {percentagePrediction}% chance to be a {categories[idx]}");
 
 }
