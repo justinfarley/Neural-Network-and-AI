@@ -6,6 +6,16 @@ namespace Neural_Network_and_AI
 {
     public static class MathUtil
     {
+        public static float[] GetOneHotEncodedArr(string category, string[] categories)
+        {
+            float[] vector = new float[categories.Length];
+            for (int i = 0; i < categories.Length; i++)
+            {
+                vector[i] = categories[i] == category ? 1.0f : 0.0f;
+            }
+            return vector;
+        }
+        
         public static float MSELoss(List<float> predictedValues, List<float> actualValues)
         {
             float totalLoss = 0;

@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Net.Http.Headers;
 using Neural_Network_and_AI;
 
 /// <summary>
@@ -15,14 +16,7 @@ using Neural_Network_and_AI;
 /// 
 /// </summary>
 
-List<Tuple<string, List<float>>> imageFloatArrays = new List<Tuple<string, List<float>>>();
-string imgExtension = ".jpg";
-var imageFiles = new List<string>();
-List<float> outputLabels = new List<float>();
-
-// Debug: Check current working directory
-Console.WriteLine($"Current working directory: {Directory.GetCurrentDirectory()}");
-
+// Simple 1 pass NN with one list of floats as inputs
 NeuralNetwork nn2 = new NeuralNetwork(0.01f, 5, 5, 2, 5);
 nn2.NetworkInit();
 nn2.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 5000);
@@ -30,105 +24,25 @@ nn2.Predict(new List<float> { 1f,2f,3f,4f,5f }).ForEach(x => Console.Write(x + "
 
 
 
-// Navigate up to project root and to fruitsTrainingData
-string[] categories = 
-{ "Apple Braeburn", "Apple Granny Smith", 
-"Apricot", "Banana", "Blueberry",
- "Cactus Fruit", "Cantaloupe", 
- "Cherry", "Clementine", "Corn", "Cucumber Ripe",
- "Grape Blue", "Kiwi", "Lemon",
- "Limes", "Mango", "Onion White",
- "Orange", "Papaya", "Passion Fruit",
- "Peach", "Pear", "Pepper Green",
- "Pepper Red", "Pineapple", "Plum",
- "Pomegranate", "Potato Red", "Raspberry",
- "Strawberry", "Tomato", "Watermelon" };
-
-float[] GetOneHotEncodedArr(string category, string[] categories)
-{
-    float[] vector = new float[categories.Length];
-    for (int i = 0; i < categories.Length; i++)
-    {
-        vector[i] = categories[i] == category ? 1.0f : 0.0f;
-    }
-    return vector;
-}
-
-//Store OneHot encoded outputs, example: [0f,0f,0f,0f,0f,1f,0f,0f,0f,...,0f] indicates 6th category output (Cactus Fruit)
-Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
-
-//Get images from each category dir
-foreach(var category in categories)
-{
-    var files = Directory.GetFiles($"fruitsTrainingData/train/train/{category}", "*" + imgExtension);
-    Console.WriteLine($"Directory: {category}, Files found: {files.Length}");
-    foreach(var imageFile in files)
-    {
-        Bitmap bitmap = new Bitmap(imageFile);
-        var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
-
-        //Store category and corresponding pixel float data for use later
-        imageFloatArrays.Add(new Tuple<string, List<float>>(category, floatArray.ToList()));
-    }
-    outputLabels.Add(Array.IndexOf(categories, category));
-}
-
-Console.WriteLine($"Total images loaded: {imageFloatArrays.Count}, Labels: {outputLabels.Count}");
-
-if (imageFloatArrays.Count == 0)
-{
-    Console.WriteLine("ERROR: No images loaded! Check your directory paths.");
-    return;
-}
-
-
 //3072 pixels (compressed 32x32 img * 3 RGB values each = 3072), 32 fruit classes, 3 hidden layers with 128 nodes each.
-NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
-nn.NetworkInit();
-
-Random random = new Random();
-List<List<float>> allInputs = new List<List<float>>();
-List<List<float>> allExpected = new List<List<float>>();
-
-//Shuffle the images so that we get random fruits and not all of one
-var shuffled = imageFloatArrays.OrderBy(x => random.Next()).ToList();
-
-//Only taking 1000 images due to testing / time constraints
-foreach (var (category, imageArray) in shuffled.Take(10000))
-{
-    allInputs.Add(imageArray);
-    allExpected.Add(categoryToOneHot[category].ToList());
-}
+//For fruit classification
+//NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
+FruitClassification fruitClassification = new FruitClassification();
 
 //Train neural network based on all of the inputs and expected data for 50 iterations using Softmax for classification
-nn.Train(allInputs, allExpected, 50, NeuralNetwork.PredictionMethod.Softmax); 
-Console.WriteLine($"Trained!!!");
+//nn.NetworkInit();
+//(var allInputs, var allExpected) = fruitClassification.TrainingData(100);
+//nn.Train(allInputs, allExpected, 10, NeuralNetwork.PredictionMethod.Softmax); //Softmax for classification
+//fruitClassification.Testing(nn);
+//Console.WriteLine($"Trained!!!");
+//ModelExporter exporter = new ModelExporter(nn);
+//exporter.ExportModel($"FRUITCLASSIFICATIONMODEL_{nn.GetHashCode()}.csv");
 
-//NeuralNetwork loadedModel = ModelExporter.ImportModel("FRUITCLASSIFICATIONMODEL_1.csv");
-//Get Test files
-var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + imgExtension);
-for(int i = 0; i < testFiles.Length; i++)
-{
-    //Just predicting first 50 images for testing
-    if(i == 50) break;
-    Bitmap bitmap = new Bitmap(testFiles[i]);
-    var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
-    Console.WriteLine($"File {testFiles[i]}");
 
-    //Predict the test image with softmax and get results
-    var results = nn.Predict(floatArray.ToList(), NeuralNetwork.PredictionMethod.Softmax);
-    
-    //Since we are using softmax, it converts the y values to percentages. The best percentage is the most accurate prediction
-    float bestClassification = results.Max();
-    float percentagePrediction = bestClassification * 100; //Convert to percentage
-    int idx = results.IndexOf(bestClassification); //Corresponding category index
+NeuralNetwork loadedModel = ModelExporter.ImportModel("FRUITCLASSIFICATIONMODEL_1.csv");
+fruitClassification.Testing(loadedModel);
 
-    //Print results!
-    Console.WriteLine($"Prediction: {percentagePrediction}% chance to be a {categories[idx]}");
 
-}
 
-ModelExporter exporter = new ModelExporter(nn);
-exporter.ExportModel("FRUITCLASSIFICATIONMODEL_2.csv");
 
-//TODO: implement exporting models and loading them so that you can train once and use a model
+
