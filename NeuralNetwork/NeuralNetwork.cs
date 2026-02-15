@@ -14,10 +14,10 @@ namespace Neural_Network_and_AI
             Softmax
         }
         public float learningRate = 0.01f;
-        private int hiddenLayers;
-        private int hiddenNodesPerLayer;
-        private int inputSize;
-        private int outputSize;
+        public int hiddenLayers;
+        public int hiddenNodesPerLayer;
+        public int inputSize;
+        public int outputSize;
         private List<InputNode> inputNodes = new List<InputNode>();
         private List<OutputNode> outputNodes = new List<OutputNode>();
         private Dictionary<int, List<HiddenNode>> hiddenNodes = new Dictionary<int, List<HiddenNode>>();
@@ -32,6 +32,61 @@ namespace Neural_Network_and_AI
             this.inputSize = inputSize;
             this.outputSize = outputSize;
         }
+
+        public List<Weight> GetAllWeights()
+        {
+            return weights;
+        }
+
+        public Dictionary<int, List<HiddenNode>> GetHiddenLayers()
+        {
+            return hiddenNodes;
+        }
+        
+        public List<OutputNode> GetOutputNodes()
+        {
+            return outputNodes;
+        }
+        
+        public List<InputNode> GetInputNodes()
+        {
+            return inputNodes;
+        }
+
+        /// <summary>
+        /// Gets a unique index for any node in the network
+        /// </summary>
+        public int GetNodeIndex(Node node)
+        {
+            int index = 0;
+            
+            // Check input nodes
+            for (int i = 0; i < inputNodes.Count; i++)
+            {
+                if (inputNodes[i] == node) return index;
+                index++;
+            }
+            
+            // Check hidden nodes
+            foreach (var layer in hiddenNodes.OrderBy(x => x.Key))
+            {
+                foreach (var hiddenNode in layer.Value)
+                {
+                    if (hiddenNode == node) return index;
+                    index++;
+                }
+            }
+            
+            // Check output nodes
+            for (int i = 0; i < outputNodes.Count; i++)
+            {
+                if (outputNodes[i] == node) return index;
+                index++;
+            }
+            
+            return -1; // Not found
+        }
+
 
         private static float GetWeightValue(Random random, int prevLayerCount)
         {

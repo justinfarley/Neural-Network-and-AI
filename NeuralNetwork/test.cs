@@ -81,6 +81,7 @@ if (imageFloatArrays.Count == 0)
     return;
 }
 
+
 //3072 pixels (compressed 32x32 img * 3 RGB values each = 3072), 32 fruit classes, 3 hidden layers with 128 nodes each.
 NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
 nn.NetworkInit();
@@ -93,7 +94,7 @@ List<List<float>> allExpected = new List<List<float>>();
 var shuffled = imageFloatArrays.OrderBy(x => random.Next()).ToList();
 
 //Only taking 1000 images due to testing / time constraints
-foreach (var (category, imageArray) in shuffled.Take(1000))
+foreach (var (category, imageArray) in shuffled.Take(10000))
 {
     allInputs.Add(imageArray);
     allExpected.Add(categoryToOneHot[category].ToList());
@@ -103,6 +104,7 @@ foreach (var (category, imageArray) in shuffled.Take(1000))
 nn.Train(allInputs, allExpected, 50, NeuralNetwork.PredictionMethod.Softmax); 
 Console.WriteLine($"Trained!!!");
 
+//NeuralNetwork loadedModel = ModelExporter.ImportModel("FRUITCLASSIFICATIONMODEL_1.csv");
 //Get Test files
 var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + imgExtension);
 for(int i = 0; i < testFiles.Length; i++)
@@ -125,5 +127,8 @@ for(int i = 0; i < testFiles.Length; i++)
     Console.WriteLine($"Prediction: {percentagePrediction}% chance to be a {categories[idx]}");
 
 }
+
+ModelExporter exporter = new ModelExporter(nn);
+exporter.ExportModel("FRUITCLASSIFICATIONMODEL_2.csv");
 
 //TODO: implement exporting models and loading them so that you can train once and use a model
