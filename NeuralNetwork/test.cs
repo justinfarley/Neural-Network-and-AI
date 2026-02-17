@@ -1,5 +1,4 @@
-using System.Drawing;
-using System.Net.Http.Headers;
+using System.Security;
 using Neural_Network_and_AI;
 
 /// <summary>
@@ -17,18 +16,29 @@ using Neural_Network_and_AI;
 /// </summary>
 
 // Simple 1 pass NN with one list of floats as inputs
-NeuralNetwork nn2 = new NeuralNetwork(0.01f, 5, 5, 2, 5);
-nn2.NetworkInit();
-nn2.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 5000);
-nn2.Predict(new List<float> { 1f,2f,3f,4f,5f }).ForEach(x => Console.Write(x + ", "));
+// NeuralNetwork linearTestNN = new NeuralNetwork(0.01f, 5, 5, 2, 5);
+// linearTestNN.NetworkInit();
+// linearTestNN.Train(new List<float>(){1f,2f,3f,4f,5f}, new List<float>(){5f, 1344f, 714f, 22f, 100f}, 5000);
+// linearTestNN.Predict(new List<float> { 1f,2f,3f,4f,5f }).ForEach(x => Console.Write(x + ", "));
 
+FruitClassification fruitClassification = new FruitClassification();
+CatsVsDogs catsVsDogs = new CatsVsDogs();
 
+// ----------CATS VS DOGS------------
+//Compressed dimensions per image are 64x64 * 3 so that is 12288 inputs
+//Luckily just 2 ouputs (cats vs dogs)
+//NeuralNetwork catsVsDogsNN = new NeuralNetwork(0.003f, 3072, 2, 2, 128);
+// catsVsDogsNN.NetworkInit();
+// (var allInputs, var allOutputs) = catsVsDogs.TrainingData(10000);
+// catsVsDogsNN.Train(allInputs, allOutputs, 100, NeuralNetwork.PredictionMethod.Softmax);
+// ModelExporter exporter = new ModelExporter(catsVsDogsNN);
+// exporter.ExportModel($"CATSVSDOGSMODEL_{catsVsDogsNN.GetHashCode()}.csv");
 
+// ----------FRUIT CLASSIFICATION------------
 //3072 pixels (compressed 32x32 img * 3 RGB values each = 3072), 32 fruit classes, 3 hidden layers with 128 nodes each.
 //For fruit classification
-//NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
-FruitClassification fruitClassification = new FruitClassification();
 
+//NeuralNetwork nn = new NeuralNetwork(0.001f, 3072, 32, 3, 128);
 //Train neural network based on all of the inputs and expected data for 50 iterations using Softmax for classification
 //nn.NetworkInit();
 //(var allInputs, var allExpected) = fruitClassification.TrainingData(100);
@@ -38,6 +48,9 @@ FruitClassification fruitClassification = new FruitClassification();
 //ModelExporter exporter = new ModelExporter(nn);
 //exporter.ExportModel($"FRUITCLASSIFICATIONMODEL_{nn.GetHashCode()}.csv");
 
+
+NeuralNetwork catsVsDogsNN = ModelExporter.ImportModel("CATSVSDOGSMODEL_1.csv");
+catsVsDogs.Testing(catsVsDogsNN);
 
 NeuralNetwork loadedModel = ModelExporter.ImportModel("FRUITCLASSIFICATIONMODEL_1.csv");
 fruitClassification.Testing(loadedModel);

@@ -1,4 +1,5 @@
 using static Neural_Network_and_AI.MathUtil;
+using System.Diagnostics;
 
 /// <summary>
 /// Author: Justin Farley
@@ -307,8 +308,10 @@ namespace Neural_Network_and_AI
 
         public void Train(List<List<float>> inputs, List<List<float>> expected, int iterations, PredictionMethod method = PredictionMethod.Linear)
         {
+            Console.WriteLine($"Began Training @ {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}");
             for(int j = 0; j < iterations; j++)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
                 float totalLoss = 0;
                 for(int i = 0; i < inputs.Count; i++)
                 {
@@ -318,7 +321,8 @@ namespace Neural_Network_and_AI
                     totalLoss += CrossEntropyLoss(preds, expected[i]);
                 }
                 float avgLoss = totalLoss / inputs.Count;
-                Console.WriteLine($"Epoch {j + 1}/{iterations} - Avg Loss: {avgLoss}");
+                TimeSpan ts = stopwatch.Elapsed;
+                Console.WriteLine($"Epoch {j + 1}/{iterations} - Avg Loss: {avgLoss}, Time for this epoch: {ts.Minutes}m and {ts.Seconds}s @ {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}");
             }
         }
         public void Train(List<float> inputs, List<float> expected, int iterations, PredictionMethod method = PredictionMethod.Linear)

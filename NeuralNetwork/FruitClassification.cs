@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using Neural_Network_and_AI;
 using static Neural_Network_and_AI.MathUtil;
 
 namespace Neural_Network_and_AI
 {
-    public class FruitClassification
+    public class FruitClassification : Dataset
     {
-
         private readonly string[] categories = 
         { "Apple Braeburn", "Apple Granny Smith", 
         "Apricot", "Banana", "Blueberry",
@@ -55,19 +49,7 @@ namespace Neural_Network_and_AI
             Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
 
             //Get images from each category dir
-            foreach(var category in categories)
-            {
-                var files = Directory.GetFiles($"fruitsTrainingData/train/train/{category}", "*" + ".jpg");
-                Console.WriteLine($"Directory: {category}, Files found: {files.Length}");
-                foreach(var imageFile in files)
-                {
-                    Bitmap bitmap = new Bitmap(imageFile);
-                    var floatArray = ImageProcessing.GetPixelColorsAsFloatArray(bitmap);
-
-                    //Store category and corresponding pixel float data for use later
-                    imageFloatArrays.Add(new Tuple<string, List<float>>(category, floatArray.ToList()));
-                }
-            }
+            imageFloatArrays = Dataset.LoadDataFromFileAll("fruitsTrainingData/train/train", ".jpg", ImageProcessing.GetPixelColorsAsFloatArray, 32, 32, categories, samples);
 
             Random random = new Random();
             List<List<float>> allInputs = new List<List<float>>();
@@ -83,7 +65,7 @@ namespace Neural_Network_and_AI
                 allExpected.Add(categoryToOneHot[category].ToList());
             }
 
-            Console.WriteLine($"Total images loaded: {imageFloatArrays.Count}");
+            Console.WriteLine($"Total images loaded: {imageFloatArrays.Count}, Total sampled: {samples}");
 
             return (allInputs, allExpected);
         }
