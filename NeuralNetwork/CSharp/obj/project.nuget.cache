@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "uvWpDa5zu0Q=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\j\\source\\repos\\NEURAL NETWORK STUFF\\Neural-Network-and-AI\\NeuralNetwork\\CSharp\\NeuralNetwork.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\j\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\j\\.nuget\\packages\\system.drawing.common\\8.0.0\\system.drawing.common.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
