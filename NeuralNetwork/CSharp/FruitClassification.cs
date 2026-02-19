@@ -19,7 +19,7 @@ namespace Neural_Network_and_AI
         "Strawberry", "Tomato", "Watermelon" };
         public void Testing(NeuralNetwork nn)
         {
-            var testFiles = Directory.GetFiles($"fruitsTrainingData/test/test", "*" + ".jpg");
+            var testFiles = Directory.GetFiles($"../fruitsTrainingData/test/test", "*" + ".jpg");
             for(int i = 0; i < testFiles.Length; i++)
             {
                 //Just predicting first 50 images for testing
@@ -49,7 +49,7 @@ namespace Neural_Network_and_AI
             Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
 
             //Get images from each category dir
-            imageFloatArrays = Dataset.LoadDataFromFileAll("fruitsTrainingData/train/train", ".jpg", ImageProcessing.GetPixelColorsAsFloatArray, 32, 32, categories, samples);
+            imageFloatArrays = Dataset.LoadDataFromFileAll("../fruitsTrainingData/train/train", ".jpg", ImageProcessing.GetPixelColorsAsFloatArray, 32, 32, categories, samples);
 
             Random random = new Random();
             List<List<float>> allInputs = new List<List<float>>();

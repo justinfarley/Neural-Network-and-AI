@@ -27,7 +27,7 @@ namespace Neural_Network_and_AI
             List<Tuple<string, List<float>>> imageFloatArrays;
             Dictionary<string, float[]> categoryToOneHot = categories.ToDictionary(cat => cat, cat => GetOneHotEncodedArr(cat, categories));
 
-            imageFloatArrays = Dataset.LoadDataFromFileAll("PetImages", ".jpg", ImageProcessing.GetPixelColorsAsFloatArray, compressedWidth, compressedHeight, categories, samples);
+            imageFloatArrays = Dataset.LoadDataFromFileAll("../PetImages", ".jpg", ImageProcessing.GetPixelColorsAsFloatArray, compressedWidth, compressedHeight, categories, samples);
 
             Random random = new Random(15235);
             List<List<float>> allInputs = new List<List<float>>();
